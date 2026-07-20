@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Overview - AI Home Advisor</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #94a3b8;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --primary-light: #e0e7ff;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: var(--bg-color);
+            margin: 0;
+            padding: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .workspace-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+            box-sizing: border-box;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .nav-left svg {
+            color: var(--primary);
+        }
+
+        .nav-right-avatar {
+            width: 32px;
+            height: 32px;
+            background: #e0e7ff;
+            color: #4f46e5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* Main Header Section */
+        .project-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .project-identity {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .project-logo-wrapper {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .project-logo-wrapper svg {
+            color: #ffffff;
+        }
+
+        .project-title-desc h1 {
+            margin: 0 0 6px 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .project-title-desc p {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* Current Stage Card */
+        .stage-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+            min-width: 180px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+        }
+
+        .stage-card .label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .stage-card .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .stage-card .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+        }
+
+        /* AI Recommendation Section (Glass Card) */
+        .ai-recommendation-card {
+            background: linear-gradient(135deg, rgba(245, 247, 255, 0.7), rgba(238, 242, 255, 0.6));
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .rec-left {
+            flex: 1;
+            z-index: 2;
+        }
+
+        .rec-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .rec-title {
+            margin: 0 0 12px 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+
+        .rec-desc {
+            margin: 0 0 24px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .why-block {
+            border-top: 1px solid rgba(226, 232, 240, 0.6);
+            padding-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .why-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .why-text {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .rec-right-visual {
+            width: 220px;
+            height: 220px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .rec-right-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .cta-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            min-width: 260px;
+        }
+
+        .confirm-cta-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        }
+
+        .confirm-cta-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
+        }
+
+        .cta-hint {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* Project Progress & Overall Progress Row */
+        .progress-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .progress-left {
+            flex: 1;
+        }
+
+        .progress-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+
+        .timeline-steps-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 16px;
+            left: 24px;
+            right: 24px;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .timeline-line-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 33.3%;
+            height: 100%;
+            background: var(--success);
+        }
+
+        .step-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            text-align: center;
+        }
+
+        .circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        .step-node.completed .circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: #ffffff;
+        }
+
+        .step-node.active .circle {
+            background: #ffffff;
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .step-node .step-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .step-node .step-status {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .step-node.active .step-status {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Overall Progress Card */
+        .overall-card {
+            border-left: 1px solid var(--border-color);
+            padding-left: 32px;
+            min-width: 180px;
+        }
+
+        .overall-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .overall-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .overall-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .overall-bar-fill {
+            width: 37%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 9999px;
+        }
+
+        .overall-hint {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* What's Done & Up Next Grid */
+        .two-column-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .column-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .column-header-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+
+        .done-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex-grow: 1;
+        }
+
+        .done-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .done-icon-wrapper {
+            width: 20px;
+            height: 20px;
+            background: #ecfdf5;
+            color: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 11px;
+        }
+
+        .done-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .done-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .done-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .card-illustration-bg {
+            position: absolute;
+            right: 16px;
+            bottom: 60px;
+            opacity: 0.04;
+            color: var(--text-primary);
+            pointer-events: none;
+        }
+
+        .summary-link {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Up Next Tasks */
+        .up-next-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .next-task-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .next-task-card:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
+            border-color: #cbd5e1;
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .task-icon-box {
+            width: 36px;
+            height: 36px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .task-info-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .task-card-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .task-arrow-right {
+            color: var(--text-tertiary);
+        }
+
+        /* Recent Activity Section */
+        .activity-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 32px;
+        }
+
+        .activity-title-row {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: 20px;
+        }
+
+        .activity-table-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .activity-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .activity-left-side {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .activity-avatar {
+            width: 32px;
+            height: 32px;
+            background: #eff6ff;
+            color: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-row.completed-activity .activity-avatar {
+            background: #ecfdf5;
+            color: var(--success);
+        }
+
+        .activity-row.system-activity .activity-avatar {
+            background: #f5f3ff;
+            color: #8b5cf6;
+        }
+
+        .activity-text-info {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .actor-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .action-details {
+            color: var(--text-secondary);
+        }
+
+        .activity-time-ago {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .view-all-activity-link {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            margin-top: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="workspace-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="nav-left">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span>Workspace</span>
+            </div>
+            <div class="nav-right-avatar">AD</div>
+        </header>
+
+        <!-- Main Header Section -->
+        <section class="project-header-row">
+            <div class="project-identity">
+                <div class="project-logo-wrapper">
+                    <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                </div>
+                <div class="project-title-desc">
+                    <h1>AI Home Advisor</h1>
+                    <p>Existing product modernization with AI-powered architecture and implementation</p>
+                </div>
+            </div>
+
+            <div class="stage-card">
+                <span class="label">Current Stage</span>
+                <span class="value">Architecture</span>
+                <span class="badge">Stage 2 of 4</span>
+            </div>
+        </section>
+
+        <!-- AI Recommendation Section (Glass Card) -->
+        <section class="ai-recommendation-card">
+            <div class="rec-left">
+                <div class="rec-tag">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <span>AI Recommendation</span>
+                </div>
+                <h2 class="rec-title">Architecture is ready.</h2>
+                <p class="rec-desc">AI has analyzed your requirements and designed the solution architecture. The next logical step is to review and confirm the architecture before we generate the implementation plan and tasks.</p>
+                
+                <div class="why-block">
+                    <span class="why-title">Why this step?</span>
+                    <p class="why-text">Confirming the architecture ensures we build the right solution before investing time in detailed tasks and implementation.</p>
+                </div>
+            </div>
+
+            <div class="cta-column">
+                <div class="rec-right-visual">
+                    <img src="/architecture_layers.jpg" alt="Architecture layers">
+                </div>
+                <button type="button" class="confirm-cta-btn">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <span>Confirm Architecture</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </button>
+                <p class="cta-hint">This will unlock task generation and sprint planning</p>
+            </div>
+        </section>
+
+        <!-- Project Progress & Overall Progress Row -->
+        <section class="progress-section">
+            <div class="progress-left">
+                <div class="progress-section-title">Project Progress</div>
+                <div class="timeline-steps-row">
+                    <div class="timeline-line">
+                        <div class="timeline-line-fill"></div>
+                    </div>
+                    
+                    <div class="step-node completed">
+                        <div class="circle">✓</div>
+                        <span class="step-title">Discovery</span>
+                        <span class="step-status">Completed</span>
+                    </div>
+                    
+                    <div class="step-node active">
+                        <div class="circle">2</div>
+                        <span class="step-title">Architecture</span>
+                        <span class="step-status">In Progress</span>
+                    </div>
+                    
+                    <div class="step-node">
+                        <div class="circle">3</div>
+                        <span class="step-title">Implementation</span>
+                        <span class="step-status">Not Started</span>
+                    </div>
+                    
+                    <div class="step-node">
+                        <div class="circle">4</div>
+                        <span class="step-title">Review & Launch</span>
+                        <span class="step-status">Not Started</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overall-card">
+                <span class="overall-title">Overall Progress</span>
+                <span class="overall-value">37%</span>
+                <div class="overall-bar-bg">
+                    <div class="overall-bar-fill"></div>
+                </div>
+                <span class="overall-hint">2 of 4 stages completed</span>
+            </div>
+        </section>
+
+        <!-- What's Done & Up Next Grid -->
+        <section class="two-column-grid">
+            <!-- Left Column: What's Done -->
+            <div class="column-card">
+                <div class="column-header-title">What's Done</div>
+                <div class="done-list">
+                    <div class="done-item">
+                        <div class="done-icon-wrapper">✓</div>
+                        <div class="done-content">
+                            <span class="done-title">Requirements analyzed</span>
+                            <span class="done-desc">AI Discovery completed</span>
+                        </div>
+                    </div>
+                    <div class="done-item">
+                        <div class="done-icon-wrapper">✓</div>
+                        <div class="done-content">
+                            <span class="done-title">Architecture designed</span>
+                            <span class="done-desc">Solution architecture created</span>
+                        </div>
+                    </div>
+                    <div class="done-item">
+                        <div class="done-icon-wrapper">✓</div>
+                        <div class="done-content">
+                            <span class="done-title">Task backlog created</span>
+                            <span class="done-desc">6 tasks mapped and ready</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <svg class="card-illustration-bg" viewBox="0 0 24 24" width="80" height="80" stroke="currentColor" stroke-width="1.5" fill="none">
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>
+
+                <a class="summary-link">
+                    <span>View full summary</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Right Column: Up Next -->
+            <div class="column-card">
+                <div class="column-header-title">Up Next</div>
+                <div class="up-next-list">
+                    <div class="next-task-card">
+                        <div class="task-left">
+                            <div class="task-icon-box">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <polyline points="10 9 9 9 8 9"/>
+                                </svg>
+                            </div>
+                            <div class="task-info-block">
+                                <span class="task-card-title">Confirm Architecture</span>
+                                <span class="task-card-desc">Review and approve the solution architecture</span>
+                            </div>
+                        </div>
+                        <svg class="task-arrow-right" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+
+                    <div class="next-task-card">
+                        <div class="task-left">
+                            <div class="task-icon-box">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                </svg>
+                            </div>
+                            <div class="task-info-block">
+                                <span class="task-card-title">Generate Implementation Plan</span>
+                                <span class="task-card-desc">AI will create detailed implementation plan</span>
+                            </div>
+                        </div>
+                        <svg class="task-arrow-right" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+
+                    <div class="next-task-card">
+                        <div class="task-left">
+                            <div class="task-icon-box">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                            </div>
+                            <div class="task-info-block">
+                                <span class="task-card-title">Start Sprint Planning</span>
+                                <span class="task-card-desc">Break down tasks into sprints</span>
+                            </div>
+                        </div>
+                        <svg class="task-arrow-right" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity Section -->
+        <section class="activity-section">
+            <div class="activity-title-row">Recent Activity</div>
+            <div class="activity-table-list">
+                <!-- Row 1 -->
+                <div class="activity-row">
+                    <div class="activity-left-side">
+                        <div class="activity-avatar">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                        <div class="activity-text-info">
+                            <span class="actor-name">Sofia</span>
+                            <span class="action-details">updated task status (Prepare Launch Strategy marked as IN_PROGRESS)</span>
+                        </div>
+                    </div>
+                    <span class="activity-time-ago">2h ago</span>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="activity-row completed-activity">
+                    <div class="activity-left-side">
+                        <div class="activity-avatar">✓</div>
+                        <div class="activity-text-info">
+                            <span class="actor-name">Daria</span>
+                            <span class="action-details">completed a task (Define Diagnostic Schema marked as DONE)</span>
+                        </div>
+                    </div>
+                    <span class="activity-time-ago">4h ago</span>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="activity-row system-activity">
+                    <div class="activity-left-side">
+                        <div class="activity-avatar">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <div class="activity-text-info">
+                            <span class="actor-name">System</span>
+                            <span class="action-details">uploaded file (architecture-scheme.png added to workspace)</span>
+                        </div>
+                    </div>
+                    <span class="activity-time-ago">6h ago</span>
+                </div>
+            </div>
+
+            <a class="view-all-activity-link">
+                <span>View all activity</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                </svg>
+            </a>
+        </section>
+    </div>
+</body>
+</html>
