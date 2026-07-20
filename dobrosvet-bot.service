@@ -1,0 +1,13 @@
+[Unit]
+Description=Dobrosvet Telegram Bot and Lead Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/dobrosvet-app
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

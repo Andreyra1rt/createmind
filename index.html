@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Dobrosvet Dev - AI Employees & Mini Apps</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=1.14">
+</head>
+<body>
+    <div class="app-container state-hero" id="app-root">
+        <!-- Декоративные фоновые элементы для Glassmorphism эффекта -->
+        <div class="glow-bg glow-1"></div>
+        <div class="glow-bg glow-2"></div>
+        <div class="glow-bg glow-3"></div>
+
+        <!-- Шапка -->
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <div class="logo-text">
+                    <h1 data-i18n="logo_title">AI & Web Studio</h1>
+                    <p data-i18n="logo_subtitle">Умная автоматизация</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Системные часы реального времени (AI OS Clock) -->
+                <div class="system-time" id="system-time">15:05</div>
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="ru">RU</button>
+                    <span class="lang-separator">/</span>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <!-- Блок Hero: Сфера и Заголовок -->
+            <section class="section hero-section" id="hero">
+                <!-- Фоновые объемные облака -->
+                <div class="volumetric-clouds"></div>
+                
+                <div class="hero-layout">
+                    <div class="hero-left">
+                        <h2 class="hero-title" data-i18n="hero_title">Ваш следующий сотрудник.</h2>
+                        <p class="hero-subtitle" data-i18n="hero_subtitle">Модернизируем существующие продукты, переносим сайты на современную архитектуру и создаем ИИ-сотрудников для автоматизации, аналитики и развития бизнеса.</p>
+                        
+                        <!-- Value Badges -->
+                        <div class="value-badges">
+                            <span class="badge-item"><span class="badge-dot purple"></span> <span data-i18n="badge_automations">⚡ Автоматизация</span></span>
+                            <span class="badge-item"><span class="badge-dot blue"></span> <span data-i18n="badge_employees">🏗️ Модернизация</span></span>
+                            <span class="badge-item"><span class="badge-dot green"></span> <span data-i18n="badge_growth">🤖 AI Engineering</span></span>
+                            <span class="badge-item"><span class="badge-dot orange"></span> <span data-i18n="badge_time">📈 Масштабирование</span></span>
+                        </div>
+ 
+                        <!-- CTA кнопки -->
+                        <div class="cta-group">
+                            <button id="cta-start-btn" class="cta-button primary" data-i18n="cta_start">Начать проект</button>
+                            <button id="cta-view-btn" class="cta-button secondary" data-i18n="cta_solutions">Смотреть решения</button>
+                        </div>
+
+                        <!-- Entry Point: Живой ввод задачи -->
+                        <div class="hero-ai-entry">
+                            <label class="entry-label" data-i18n="hero_entry_label">Какую задачу вы хотите решить?</label>
+                            <div class="entry-input-wrapper">
+                                <button type="button" id="hero-mic-btn" class="entry-mic-btn" aria-label="Голосовой ввод">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                        <line x1="12" y1="19" x2="12" y2="23"/>
+                                        <line x1="8" y1="23" x2="16" y2="23"/>
+                                    </svg>
+                                </button>
+                                <input type="text" id="hero-ai-input" data-i18n-placeholder="hero_entry_placeholder" placeholder="Опишите проект, сайт или задачу для автоматизации..." autocomplete="off">
+                                <button type="button" id="hero-send-btn" class="entry-send-btn" aria-label="Отправить">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                                        <line x1="22" y1="2" x2="11" y2="13"/>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="entry-scenarios">
+                                <button type="button" class="scenario-tag" data-text-ru="Обновить существующий продукт" data-text-en="Update existing product" data-i18n="tag_sales_emp">Обновить существующий продукт</button>
+                                <button type="button" class="scenario-tag" data-text-ru="Перенести сайт на новую архитектуру" data-text-en="Migrate website to new architecture" data-i18n="tag_tg_app">Перенести сайт на новую архитектуру</button>
+                                <button type="button" class="scenario-tag" data-text-ru="Внедрить AI в бизнес" data-text-en="Integrate AI into business" data-i18n="tag_process_auto">Внедрить AI в бизнес</button>
+                            </div>
+                        </div>
+
+                        <!-- Стеклянный лог активности (Live Activity Feed) -->
+                        <div class="live-activity-feed" id="live-activity-feed"></div>
+                    </div>
+ 
+                    <!-- Интерактивная 3D Сфера с ИИ внутри -->
+                    <div class="hero-right">
+                        <div class="crystal-sphere-container" id="sphere-trigger">
+                            <canvas id="crystal-canvas"></canvas>
+                            <div class="sphere-glow-ring"></div>
+                            
+                            <!-- Сюжетное уведомление для Cinematic Story Sequence -->
+                            <div class="story-notification" id="story-notification">
+                                <div class="story-notification-header">
+                                    <span class="story-notification-icon">💬</span>
+                                    <span class="story-notification-title" id="story-notif-title">Telegram</span>
+                                </div>
+                                <div class="story-notification-body" id="story-notif-body">New customer message</div>
+                                <div class="story-notification-footer" id="story-notif-footer"></div>
+                            </div>
+                            
+                            <!-- Live status badge inside sphere area -->
+                            <div class="pulse-counter" id="pulse-indicator">
+                                <span class="pulse-dot-live"></span>
+                                <span data-i18n="pulse_counter_label">Задач выполнено сегодня:</span> <strong id="task-counter" class="pulse-counter-value">278</strong>
+                            </div>
+
+                            <!-- Живой тикер бизнес-событий (Living Business) -->
+                            <div class="live-event-ticker" id="live-event-ticker">
+                                <span class="ticker-dot"></span>
+                                <span class="ticker-text" id="ticker-text-val">AI initialized...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Блок AI Workspace (Рабочая область ИИ) -->
+            <section class="section workspace-section collapsed" id="workspace">
+                <div class="section-header">
+                    <span class="section-tag legacy-workspace-header" data-i18n="workspace_tag">AI OS Workspace</span>
+                    <h2 class="legacy-workspace-header" data-i18n="workspace_title">Интерактивная среда</h2>
+                    <p class="legacy-workspace-header" data-i18n="workspace_subtitle">ИИ-сотрудник координирует все бизнес-процессы в реальном времени.</p>
+
+                    <span class="section-tag discovery-workspace-header">AI DISCOVERY</span>
+                    <h2 class="discovery-workspace-header">Анализ проекта</h2>
+                    <p class="discovery-workspace-header">ИИ изучает ваш запрос и формирует структуру решения.</p>
+                </div>
+
+                <!-- Контейнер AI Discovery UX -->
+                <div class="ai-discovery-container" id="ai-discovery" aria-live="polite">
+                    <!-- Заголовок / Основной статус -->
+                    <div class="discovery-header">
+                        <div class="discovery-spinner-wrapper" id="discovery-spinner-wrapper">
+                            <div class="discovery-spinner"></div>
+                        </div>
+                        <h3 id="discovery-status-title" data-i18n="discovery_status_idle">Ожидание запроса...</h3>
+                    </div>
+
+                    <!-- Карточка исходного запроса пользователя -->
+                    <div class="discovery-user-query-card" id="discovery-user-query-card" style="display: none;">
+                        <div class="query-card-tag" data-i18n="discovery_user_query_tag">Ваш запрос</div>
+                        <p class="query-card-text" id="discovery-user-query-text">...</p>
+                    </div>
+
+                    <!-- Бегущие/сменяющиеся индикаторы анализа (Stage 1: Thinking) -->
+                    <div class="discovery-indicators" id="discovery-indicators">
+                        <div class="indicator-item active" id="discovery-current-indicator"></div>
+                    </div>
+
+                    <!-- Выводы понимания проекта (Stage 2: Understanding) -->
+                    <div class="discovery-facts-panel" id="discovery-facts-panel">
+                        <h4 class="panel-title" data-i18n="discovery_understood_title">Я понял задачу</h4>
+                        <div class="facts-list" id="discovery-facts-list">
+                            <!-- Сюда динамически добавляются максимум 4 факта -->
+                        </div>
+                    </div>
+
+                    <!-- Карточка предложения сменить язык интерфейса -->
+                    <div class="discovery-lang-suggestion-card" id="discovery-lang-suggestion-card" style="display: none;">
+                        <div class="suggestion-icon">🌐</div>
+                        <p id="discovery-lang-suggestion-text">It looks like you're communicating in English. Switch the interface to English?</p>
+                        <div class="suggestion-actions">
+                            <button type="button" class="suggestion-btn primary" id="discovery-lang-switch-btn">Switch</button>
+                            <button type="button" class="suggestion-btn secondary" id="discovery-lang-keep-btn">Keep Russian</button>
+                        </div>
+                    </div>
+
+                    <!-- Уточняющие вопросы (Stage 3: Clarifying) -->
+                    <div class="discovery-questions-panel" id="discovery-questions-panel">
+                        <h4 class="panel-title" data-i18n="discovery_clarifying_title">Мне нужно уточнить несколько деталей</h4>
+                        <form id="discovery-questions-form" class="questions-form">
+                            <div class="questions-list" id="discovery-questions-list">
+                                <!-- Сюда динамически добавляются ровно 3 вопроса -->
+                            </div>
+                            <button type="submit" class="discovery-submit-btn" id="discovery-submit-btn" disabled>
+                                <span data-i18n="discovery_submit_btn">Продолжить анализ</span>
+                            </button>
+                        </form>
+                        <div class="discovery-saved-status" id="discovery-saved-status">
+                            <h4 class="saved-title" data-i18n="discovery_saved_title">Ответы сохранены</h4>
+                            <p class="saved-subtitle" data-i18n="discovery_saved_subtitle">Следующий этап — архитектура решения</p>
+                        </div>
+                    </div>
+
+                    <!-- Блок ошибок (Error States) -->
+                    <div class="discovery-error-panel" id="discovery-error-panel">
+                        <h4 class="error-title" data-i18n="discovery_error_title">Не удалось завершить анализ</h4>
+                        <p class="error-subtitle" data-i18n="discovery_error_subtitle">Попробуйте повторить запрос.</p>
+                        <button type="button" class="discovery-retry-btn" id="discovery-retry-btn">
+                            <span data-i18n="discovery_retry_btn">Повторить анализ</span>
+                        </button>
+                    </div>
+                </div>
+
+
+
+                <div class="workspace-grid">
+                    <!-- Карта 1: AI Chat & Voice Assistant -->
+                    <div class="workspace-card card-chat" data-card-index="1">
+                        <div class="card-header-clean">
+                            <span class="card-icon">💬</span>
+                            <h4 data-i18n="card_chat_title">Интерфейс общения</h4>
+                        </div>
+                        <div class="chat-preview-box">
+                            <div class="preview-message user">
+                                <p data-i18n="chat_user_text">Найди необработанные лиды в CRM.</p>
+                            </div>
+                            <div class="preview-message ai">
+                                <div class="ai-avatar-mini">🤖</div>
+                                <p data-i18n="chat_ai_text">Найдено 17 диалогов. Обработано. Ответы отправлены клиентам.</p>
+                            </div>
+                            <div class="voice-wave-container">
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                            </div>
+                            <div class="voice-text-indicator">
+                                🎤 <span data-i18n="voice_text">Создать Telegram-бота для поддержки клиентов...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карта 2: AI Team (ИИ-Сотрудники) -->
+                    <div class="workspace-card card-team" data-card-index="2">
+                        <div class="card-header-clean">
+                            <span class="card-icon">👥</span>
+                            <h4 data-i18n="card_team_title">ИИ-Команда (Агенты)</h4>
+                        </div>
+                        <div class="team-agents-list">
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <span class="agent-avatar-mini">💼</span>
+                                    <span class="agent-name" data-i18n="agent_sales">Sales AI (Продажи)</span>
+                                </div>
+                                <span class="agent-status-badge online"><span class="status-dot"></span> online</span>
+                            </div>
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <span class="agent-avatar-mini">📢</span>
+                                    <span class="agent-name" data-i18n="agent_marketing">Marketing AI (Маркетинг)</span>
+                                </div>
+                                <span class="agent-status-badge online"><span class="status-dot"></span> online</span>
+                            </div>
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <span class="agent-avatar-mini">🛠️</span>
+                                    <span class="agent-name" data-i18n="agent_support">Support AI (Поддержка)</span>
+                                </div>
+                                <span class="agent-status-badge online"><span class="status-dot"></span> online</span>
+                            </div>
+                            <div class="agent-item">
+                                <div class="agent-info">
+                                    <span class="agent-avatar-mini">💰</span>
+                                    <span class="agent-name" data-i18n="agent_finance">Finance AI (Финансы)</span>
+                                </div>
+                                <span class="agent-status-badge online"><span class="status-dot"></span> online</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карта 3: Workflow / Data Flow -->
+                    <div class="workspace-card card-workflow" data-card-index="3">
+                        <div class="card-header-clean">
+                            <span class="card-icon">⚙️</span>
+                            <h4 data-i18n="card_workflow_title">Автоматизация процессов</h4>
+                        </div>
+                        <div class="workflow-steps-vertical">
+                            <div class="flow-step active" id="flow-lead">
+                                <span class="step-num">01</span>
+                                <span class="step-label" data-i18n="flow_lead">Получение лида (Lead)</span>
+                            </div>
+                            <div class="flow-step-arrow">↓</div>
+                            <div class="flow-step" id="flow-qual">
+                                <span class="step-num">02</span>
+                                <span class="step-label" data-i18n="flow_qual">Квалификация ИИ (Qualification)</span>
+                            </div>
+                            <div class="flow-step-arrow">↓</div>
+                            <div class="flow-step" id="flow-crm">
+                                <span class="step-num">03</span>
+                                <span class="step-label" data-i18n="flow_crm">Запись в CRM (CRM sync)</span>
+                            </div>
+                            <div class="flow-step-arrow">↓</div>
+                            <div class="flow-step" id="flow-invoice">
+                                <span class="step-num">04</span>
+                                <span class="step-label" data-i18n="flow_invoice">Выставление счета (Invoice)</span>
+                            </div>
+                            <div class="flow-step-arrow">↓</div>
+                            <div class="flow-step" id="flow-completed">
+                                <span class="step-num">05</span>
+                                <span class="step-label" data-i18n="flow_complete">Завершено (Completed)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карта 4: Memory (Память ИИ) -->
+                    <div class="workspace-card card-memory" data-card-index="4">
+                        <div class="card-header-clean">
+                            <span class="card-icon">🧠</span>
+                            <h4 data-i18n="card_memory_title">База знаний и память</h4>
+                        </div>
+                        <div class="memory-blocks">
+                            <div class="memory-item">
+                                <span class="memory-tag" data-i18n="mem_tag_comm">Канал связи</span>
+                                <p class="memory-val" data-i18n="mem_val_comm">Telegram WebApp & CRM</p>
+                            </div>
+                            <div class="memory-item">
+                                <span class="memory-tag" data-i18n="mem_tag_budget">Бюджет лида</span>
+                                <p class="memory-val" data-i18n="mem_val_budget">Утвержден автоматически</p>
+                            </div>
+                            <div class="memory-item">
+                                <span class="memory-tag" data-i18n="mem_tag_goals">Цели бизнеса</span>
+                                <p class="memory-val" data-i18n="mem_val_goals">Масштабирование воронки</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карта 5: Website Analysis & Documents -->
+                    <div class="workspace-card card-web-docs" data-card-index="5">
+                        <div class="card-header-clean">
+                            <span class="card-icon">🌐</span>
+                            <h4 data-i18n="card_analysis_title">Анализ & Документы</h4>
+                        </div>
+                        <div class="web-analysis-preview">
+                            <div class="web-url">example.com</div>
+                            <div class="analysis-status positive">✓ SEO & Performance OK</div>
+                            <div class="doc-drop-zone">
+                                <span class="doc-icon">📎</span>
+                                <span class="doc-label" data-i18n="doc_drop">PDF / Word / Excel прикреплены</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карта 6: Analytics Graph -->
+                    <div class="workspace-card card-analytics" data-card-index="6">
+                        <div class="card-header-clean">
+                            <span class="card-icon">📈</span>
+                            <h4 data-i18n="card_analytics_title">Эффективность бизнеса</h4>
+                        </div>
+                        <div class="analytics-preview-box">
+                            <div class="efficiency-badge">+42%</div>
+                            <div class="mini-chart-svg-container">
+                                <svg class="mini-chart-svg" viewBox="0 0 120 40">
+                                    <path d="M 0 35 Q 20 20 40 28 T 80 12 T 120 5" fill="none" stroke="rgba(99, 102, 241, 0.8)" stroke-width="2"/>
+                                    <path d="M 0 35 Q 20 20 40 28 T 80 12 T 120 5 L 120 40 L 0 40 Z" fill="rgba(99, 102, 241, 0.05)"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ввод для ИИ под картами -->
+                <div class="workspace-input-bar">
+                    <div class="input-glass-container">
+                        <input type="text" id="workspace-ai-input" placeholder="Спросите вашего ИИ-сотрудника..." data-i18n-placeholder="workspace_input_placeholder" disabled>
+                        <div class="input-actions-icons">
+                            <span class="input-action-icon">🎤</span>
+                            <span class="input-action-icon">📎</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Блок 3: Услуги -->
+            <section class="section services-detailed reveal" id="services-list">
+                <div class="section-header">
+                    <span class="section-tag" data-i18n="services_tag">Решения</span>
+                    <h2 data-i18n="services_title">Наши услуги</h2>
+                    <p data-i18n="services_subtitle">Качественная разработка полного цикла от идеи до масштабируемого продукта.</p>
+                </div>
+                <div class="services-grid">
+                    <!-- Карточка 1: AI Employee -->
+                    <div class="service-card" data-tilt>
+                        <div class="service-card-header">
+                            <span class="service-mini-tag">🤖 Scenario 01</span>
+                            <h3 data-i18n="service_1_title">ИИ-Сотрудник</h3>
+                        </div>
+                        <p class="service-card-desc" data-i18n="service_1_desc">ИИ заменяет оператора: квалифицирует клиентов, отвечает на вопросы и планирует созвоны.</p>
+                        <div class="mini-workflow">
+                            <div class="mini-step" style="--i:0">
+                                <span class="mini-step-icon">💬</span>
+                                <span class="mini-step-text" data-i18n="s1_step1">Message</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:0">→</span>
+                            <div class="mini-step" style="--i:1">
+                                <span class="mini-step-icon">🧠</span>
+                                <span class="mini-step-text" data-i18n="s1_step2">Analyze</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:1">→</span>
+                            <div class="mini-step" style="--i:2">
+                                <span class="mini-step-icon">📝</span>
+                                <span class="mini-step-text" data-i18n="s1_step3">Reply</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:2">→</span>
+                            <div class="mini-step" style="--i:3">
+                                <span class="mini-step-icon">✓</span>
+                                <span class="mini-step-text" data-i18n="s1_step4">Booked</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 2: Telegram Mini App -->
+                    <div class="service-card" data-tilt>
+                        <div class="service-card-header">
+                            <span class="service-mini-tag">📱 Scenario 02</span>
+                            <h3 data-i18n="service_2_title">Telegram WebApp</h3>
+                        </div>
+                        <p class="service-card-desc" data-i18n="service_2_desc">Интерактивный веб-интерфейс внутри Telegram: продажи, каталог услуг, оплата в 1 клик.</p>
+                        <div class="mini-workflow">
+                            <div class="mini-step" style="--i:0">
+                                <span class="mini-step-icon">🚀</span>
+                                <span class="mini-step-text" data-i18n="s2_step1">Open</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:0">→</span>
+                            <div class="mini-step" style="--i:1">
+                                <span class="mini-step-icon">👤</span>
+                                <span class="mini-step-text" data-i18n="s2_step2">Form</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:1">→</span>
+                            <div class="mini-step" style="--i:2">
+                                <span class="mini-step-icon">💳</span>
+                                <span class="mini-step-text" data-i18n="s2_step3">Pay</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:2">→</span>
+                            <div class="mini-step" style="--i:3">
+                                <span class="mini-step-icon">✓</span>
+                                <span class="mini-step-text" data-i18n="s2_step4">Done</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 3: Business Automation -->
+                    <div class="service-card" data-tilt>
+                        <div class="service-card-header">
+                            <span class="service-mini-tag">⚡ Scenario 03</span>
+                            <h3 data-i18n="service_3_title">Автоматизация</h3>
+                        </div>
+                        <p class="service-card-desc" data-i18n="service_3_desc">Автоматическое распределение лидов, мгновенная отправка данных в CRM и уведомление менеджеров.</p>
+                        <div class="mini-workflow">
+                            <div class="mini-step" style="--i:0">
+                                <span class="mini-step-icon">📥</span>
+                                <span class="mini-step-text" data-i18n="s3_step1">Lead</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:0">→</span>
+                            <div class="mini-step" style="--i:1">
+                                <span class="mini-step-icon">🔀</span>
+                                <span class="mini-step-text" data-i18n="s3_step2">Route</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:1">→</span>
+                            <div class="mini-step" style="--i:2">
+                                <span class="mini-step-icon">📊</span>
+                                <span class="mini-step-text" data-i18n="s3_step3">CRM</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:2">→</span>
+                            <div class="mini-step" style="--i:3">
+                                <span class="mini-step-icon">✓</span>
+                                <span class="mini-step-text" data-i18n="s3_step4">Alert</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 4: Website Intelligence -->
+                    <div class="service-card" data-tilt>
+                        <div class="service-card-header">
+                            <span class="service-mini-tag">🌐 Scenario 04</span>
+                            <h3 data-i18n="service_4_title">Интеллект сайта</h3>
+                        </div>
+                        <p class="service-card-desc" data-i18n="service_4_desc">Умный ИИ-анализ поведения пользователей, авто-поиск багов, проверка SEO и скорость загрузки.</p>
+                        <div class="mini-workflow">
+                            <div class="mini-step" style="--i:0">
+                                <span class="mini-step-icon">🔍</span>
+                                <span class="mini-step-text" data-i18n="s4_step1">Scan</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:0">→</span>
+                            <div class="mini-step" style="--i:1">
+                                <span class="mini-step-icon">📈</span>
+                                <span class="mini-step-text" data-i18n="s4_step2">SEO</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:1">→</span>
+                            <div class="mini-step" style="--i:2">
+                                <span class="mini-step-icon">⚡</span>
+                                <span class="mini-step-text" data-i18n="s4_step3">Perf</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:2">→</span>
+                            <div class="mini-step" style="--i:3">
+                                <span class="mini-step-icon">✓</span>
+                                <span class="mini-step-text" data-i18n="s4_step4">Report</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 5: Documents AI -->
+                    <div class="service-card" data-tilt>
+                        <div class="service-card-header">
+                            <span class="service-mini-tag">📄 Scenario 05</span>
+                            <h3 data-i18n="service_5_title">Анализ документов</h3>
+                        </div>
+                        <p class="service-card-desc" data-i18n="service_5_desc">ИИ мгновенно вычленяет суть из PDF-договоров, отчетов и формирует коммерческие предложения.</p>
+                        <div class="mini-workflow">
+                            <div class="mini-step" style="--i:0">
+                                <span class="mini-step-icon">📤</span>
+                                <span class="mini-step-text" data-i18n="s5_step1">PDF</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:0">→</span>
+                            <div class="mini-step" style="--i:1">
+                                <span class="mini-step-icon">🔑</span>
+                                <span class="mini-step-text" data-i18n="s5_step2">Extract</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:1">→</span>
+                            <div class="mini-step" style="--i:2">
+                                <span class="mini-step-icon">📄</span>
+                                <span class="mini-step-text" data-i18n="s5_step3">Summary</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:2">→</span>
+                            <div class="mini-step" style="--i:3">
+                                <span class="mini-step-icon">✓</span>
+                                <span class="mini-step-text" data-i18n="s5_step4">Proposal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 6: Voice AI -->
+                    <div class="service-card" data-tilt>
+                        <div class="service-card-header">
+                            <span class="service-mini-tag">🎙️ Scenario 06</span>
+                            <h3 data-i18n="service_6_title">Голосовой ИИ</h3>
+                        </div>
+                        <p class="service-card-desc" data-i18n="service_6_desc">Распознавание голосовых сообщений клиентов, вычленение сути и авто-создание задач для команды.</p>
+                        <div class="mini-workflow">
+                            <div class="mini-step" style="--i:0">
+                                <span class="mini-step-icon">🔊</span>
+                                <span class="mini-step-text" data-i18n="s6_step1">Voice</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:0">→</span>
+                            <div class="mini-step" style="--i:1">
+                                <span class="mini-step-icon">✍️</span>
+                                <span class="mini-step-text" data-i18n="s6_step2">Text</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:1">→</span>
+                            <div class="mini-step" style="--i:2">
+                                <span class="mini-step-icon">🎯</span>
+                                <span class="mini-step-text" data-i18n="s6_step3">Intent</span>
+                            </div>
+                            <span class="mini-arrow" style="--i:2">→</span>
+                            <div class="mini-step" style="--i:3">
+                                <span class="mini-step-icon">✓</span>
+                                <span class="mini-step-text" data-i18n="s6_step4">Task</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Блок 4: Сроки и этапы -->
+            <section class="section timeline-section reveal" id="timeline">
+                <div class="section-header">
+                    <span class="section-tag" data-i18n="timeline_tag">Процесс</span>
+                    <h2 data-i18n="timeline_title">Запуск проекта <span class="gradient-text">сегодня</span></h2>
+                    <p data-i18n="timeline_subtitle">От вашей идеи до первого рабочего прототипа за 24 часа. Без лишней бюрократии.</p>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-number">01</div>
+                        <div class="timeline-content">
+                            <h3 data-i18n="timeline_step_1_title">Обсуждение идеи</h3>
+                            <span class="timeline-duration" data-i18n="timeline_step_1_time">Сегодня (30 минут)</span>
+                            <p data-i18n="timeline_step_1_desc">Быстрый созвон. Разбираем вашу задачу, подбираем стек технологий и утверждаем концепт.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-number">02</div>
+                        <div class="timeline-content">
+                            <h3 data-i18n="timeline_step_2_title">Интерактивный прототип</h3>
+                            <span class="timeline-duration" data-i18n="timeline_step_2_time">Сегодня к вечеру</span>
+                            <p data-i18n="timeline_step_2_desc">Проектируем логику работы и собираем кликабельный макет, который вы сможете оценить в этот же день.</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-number">03</div>
+                        <div class="timeline-content">
+                            <h3 data-i18n="timeline_step_3_title">Старт разработки</h3>
+                            <span class="timeline-duration" data-i18n="timeline_step_3_time">Сегодня (сразу после ТЗ)</span>
+                            <p data-i18n="timeline_step_3_desc">Без задержек разворачиваем проект, настраиваем базы данных и подключаем API ИИ-моделей (Gemini / GPT).</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-number">04</div>
+                        <div class="timeline-content">
+                            <h3 data-i18n="timeline_step_4_title">Первые результаты</h3>
+                            <span class="timeline-duration" data-i18n="timeline_step_4_time">Уже завтра</span>
+                            <p data-i18n="timeline_step_4_desc">Вы получаете первую готовую к работе версию (MVP) для сбора заявок и тестирования гипотез.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Динамический роадмап от ИИ (скрыт по умолчанию) -->
+            <section class="section roadmap-dynamic-section reveal hidden" id="dynamic-roadmap">
+                <div class="section-header">
+                    <span class="section-tag" data-i18n="roadmap_tag">AI Анализ</span>
+                    <h2 data-i18n="roadmap_title">Персональный <span class="gradient-text">Роадмап</span></h2>
+                    <p data-i18n="roadmap_subtitle">Индивидуальный план разработки вашего проекта на основе нашего стека технологий.</p>
+                </div>
+                <div id="dynamic-roadmap-content"></div>
+            </section>
+
+            <!-- Блок 5: Контакты -->
+            <section class="section contact-section reveal" id="contact">
+                <div class="section-header">
+                    <span class="section-tag" data-i18n="contact_tag">Старт</span>
+                    <h2 data-i18n="contact_title">Что бы вы хотели поручить ИИ в вашем бизнесе?</h2>
+                    <p data-i18n="contact_subtitle">Спроектируйте архитектуру вашей будущей системы вместе с ИИ-Архитектором за 1 минуту.</p>
+                </div>
+
+                <div class="architect-container">
+                    <!-- Левая колонка: Диалог с ИИ-Архитектором -->
+                    <div class="architect-chat-column">
+                        <div class="architect-presence">
+                            <div class="architect-orb">
+                                <div class="orb-core"></div>
+                                <div class="orb-wave"></div>
+                            </div>
+                            <div class="architect-status">
+                                <span class="presence-title">Senior AI Solution Architect</span>
+                                <span class="presence-status online">● active thinking</span>
+                            </div>
+                        </div>
+
+                        <div class="architect-chat-log" id="architect-chat-log">
+                            <!-- Приветствие будет добавлено скриптом -->
+                        </div>
+
+                        <div class="architect-typing" id="architect-typing">
+                            <span></span><span></span><span></span>
+                        </div>
+
+                        <div class="architect-input-wrapper">
+                            <input type="text" id="architect-input" placeholder="Опишите вашу идею..." data-i18n-placeholder="architect_input_placeholder">
+                            <button id="architect-send-btn" class="architect-send-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="architect-placeholder-hint" id="architect-placeholder-hint">
+                            "I need an AI employee for Telegram."
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка: Динамический Чертеж (Blueprint) -->
+                    <div class="architect-blueprint-column">
+                        <div class="blueprint-panel" id="architect-blueprint-panel">
+                            <div class="blueprint-header">
+                                <span class="blueprint-icon">📐</span>
+                                <h3 data-i18n="architect_blueprint_title">Архитектура вашего проекта</h3>
+                            </div>
+                            
+                            <!-- Панель понимания ИИ-Архитектора -->
+                            <div class="blueprint-understanding-box" id="blueprint-understanding-box">
+                                <span class="modules-title" data-i18n="blueprint_understanding_title">Живая спецификация (ИИ-Анализ):</span>
+                                <div class="understanding-grid">
+                                    <div class="understanding-item">
+                                        <span class="u-label" data-i18n="u_business">Бизнес:</span>
+                                        <span class="u-value" id="u-val-business">—</span>
+                                    </div>
+                                    <div class="understanding-item">
+                                        <span class="u-label" data-i18n="u_goal">Цель:</span>
+                                        <span class="u-value" id="u-val-goal">—</span>
+                                    </div>
+                                    <div class="understanding-item">
+                                        <span class="u-label" data-i18n="u_channel">Канал:</span>
+                                        <span class="u-value" id="u-val-channel">—</span>
+                                    </div>
+                                    <div class="understanding-item">
+                                        <span class="u-label" data-i18n="u_integrations">Интеграции:</span>
+                                        <span class="u-value" id="u-val-integrations">—</span>
+                                    </div>
+                                    <div class="understanding-item">
+                                        <span class="u-label" data-i18n="u_users">Пользователи:</span>
+                                        <span class="u-value" id="u-val-users">—</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="blueprint-modules" style="margin-top: 15px;">
+                                <span class="modules-title" data-i18n="architect_detected_modules">Обнаруженные модули:</span>
+                                <div class="modules-list" id="blueprint-modules-list">
+                                    <div class="module-check-placeholder">Ожидание параметров системы...</div>
+                                </div>
+                            </div>
+
+                            <!-- Схема связей в реальном времени -->
+                            <div class="blueprint-visual-container">
+                                <canvas id="blueprint-canvas"></canvas>
+                            </div>
+
+                            <div class="blueprint-summary-block">
+                                <div class="blueprint-estimate" id="blueprint-estimate-weeks" style="opacity: 0.5;">
+                                    Let's design it together.
+                                </div>
+                                <div class="blueprint-actions hidden" id="blueprint-actions-block">
+                                    <button id="blueprint-call-btn" class="cta-button" data-i18n="architect_call_btn">Запланировать стратегический звонок</button>
+                                    <button id="blueprint-download-btn" class="outline-btn" data-i18n="architect_blueprint_btn">Получить чертеж проекта</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Строка доверия (Subtle Proof) -->
+                <div class="subtle-proof-line">
+                    <span data-i18n="proof_sales">● AI Sales Assistant (вчера)</span>
+                    <span data-i18n="proof_miniapp">● Telegram Mini App (3 дня назад)</span>
+                    <span data-i18n="proof_automation">● CRM Автоматизация (на этой неделе)</span>
+                    <span data-i18n="proof_consultant">● AI Consultant (сегодня)</span>
+                </div>
+            </section>
+        </main>
+
+        <!-- Эмоциональный Финал (Signature Experience) -->
+        <section class="section signature-footer-section reveal" id="final-signature">
+            <div class="signature-canvas-wrapper">
+                <canvas id="signature-canvas"></canvas>
+            </div>
+            <h2 class="signature-phrase" data-i18n="signature_phrase">Every great AI system starts with one idea.</h2>
+            <button id="signature-btn" class="cta-button" data-i18n="signature_btn">Let's build yours</button>
+            <p class="signature-copyright" data-i18n="footer_text">© 2026 AI & Web Studio. Все права защищены.</p>
+        </section>
+    </div>
+
+    <!-- Уведомления (Toast) -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Виджет Чат-ассистента -->
+    <div class="chat-widget-container">
+        <!-- Кнопка вызова (Бабл) -->
+        <button id="chat-trigger" class="chat-trigger-btn" aria-label="Открыть AI чат">
+            <span class="trigger-icon">
+                <!-- Кастомный волшебный робот SVG -->
+                <svg class="magic-robot-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2V5" stroke-linecap="round"/>
+                    <circle cx="12" cy="5" r="1" fill="currentColor"/>
+                    <rect x="4" y="9" width="16" height="11" rx="3" fill="rgba(99, 102, 241, 0.1)"/>
+                    <line x1="8" y1="14" x2="8.01" y2="14" stroke-width="3" stroke-linecap="round" class="robot-eye-left"/>
+                    <line x1="16" y1="14" x2="16.01" y2="14" stroke-width="3" stroke-linecap="round" class="robot-eye-right"/>
+                    <path d="M9 17h6" stroke-linecap="round"/>
+                    <path d="M2 12h2M20 12h2" stroke-linecap="round"/>
+                </svg>
+            </span>
+            <span class="trigger-pulse"></span>
+        </button>
+
+        <!-- Окно чата -->
+        <div id="chat-window" class="chat-window hidden">
+            <div class="chat-header">
+                <div class="chat-header-info">
+                    <span class="chat-avatar">🤖</span>
+                    <div>
+                        <h4 data-i18n="chat_header_title">AI-Консультант</h4>
+                        <p class="status-online"><span class="status-dot"></span> <span data-i18n="chat_status_text">онлайн</span></p>
+                    </div>
+                </div>
+                <button id="chat-close" class="chat-close-btn">&times;</button>
+            </div>
+            
+            <div id="chat-messages" class="chat-messages">
+                <div class="message system-message" data-i18n="chat_welcome_msg">
+                    Привет! Напишите или надиктуйте голосом вашу идею (например: "Нужен бот для доставки еды" или "Хочу сайт для продажи услуг").
+                    <br><br>
+                    Я мгновенно проанализирую её, предложу стек технологий и составлю детальный роадмап проекта прямо на этой странице! 🚀
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <button id="voice-btn" class="voice-record-btn" title="Надиктовать голосом">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mic-icon">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                </button>
+                <input type="text" id="chat-input" placeholder="Опишите вашу идею..." data-i18n-placeholder="chat_input_placeholder" autocomplete="off">
+                <button id="chat-send" class="chat-send-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="send-icon">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=1.14"></script>
+</body>
+</html>
