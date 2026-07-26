@@ -799,8 +799,8 @@
             </div>
             <div class="lang-container">
                 <div class="lang-toggle">
-                    <button class="lang-btn active" id="lang-ru" onclick="toggleLanguage('ru')">RU</button>
-                    <button class="lang-btn" id="lang-en" onclick="toggleLanguage('en')">EN</button>
+                    <button class="lang-btn active" id="lang-ru" data-lang="ru" onclick="toggleLanguage('ru')">RU</button>
+                    <button class="lang-btn" id="lang-en" data-lang="en" onclick="toggleLanguage('en')">EN</button>
                 </div>
                 <button class="nav-cta" data-translate onclick="openModal()" data-ru="Обсудить задачу" data-en="Discuss project">Обсудить задачу</button>
             </div>
@@ -1123,6 +1123,6 @@
             if (e.key === 'Escape') closeModal();
         });
     </script>
-    <script src="app.js?v=2.10"></script>
+    <script src="app.js?v=2.20"></script>
 </body>
 </html>

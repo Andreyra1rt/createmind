@@ -442,12 +442,21 @@ const translations = {
     }
 };
 
-let currentLang = 'ru';
+let currentLang = localStorage.getItem('preferred-lang') || 'ru';
+window.currentLang = currentLang;
+
+window.updateTranslations = function(lang) {
+    currentLang = lang;
+    window.currentLang = lang;
+    if (typeof setLanguage === 'function') {
+        setLanguage(lang);
+    }
+};
 
 function setLanguage(lang) {
     if (!translations[lang]) return;
     currentLang = lang;
-    localStorage.setItem('uiLanguage', lang);
+    localStorage.setItem('preferred-lang', lang);
 
     // Переводим обычные элементы
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -484,7 +493,7 @@ function setLanguage(lang) {
 
 const LanguageManager = {
     getUILanguage() {
-        let lang = localStorage.getItem('uiLanguage');
+        let lang = localStorage.getItem('preferred-lang');
         if (!lang) {
             // Проверяем язык юзера в Telegram WebApp SDK
             const tgLang = tg.initDataUnsafe?.user?.language_code;
@@ -1206,34 +1215,43 @@ function renderRoadmap(ideaText, data) {
         }
 
         reset(isInitial = false) {
-            if (isInitial) {
-                if (this.type === 'analytics') this.angle = 0;
-                else if (this.type === 'accounting') this.angle = Math.PI / 2;
-                else if (this.type === 'logistics') this.angle = Math.PI;
-                else if (this.type === 'content') this.angle = Math.PI * 1.5;
-            } else {
-                this.angle = Math.random() * Math.PI * 2;
+            // Жестко фиксируем сдвиг фаз на 90 градусов (PI/2), чтобы они летели красивым созвездием
+            if (this.type === 'analytics') this.angle = 0;
+            else if (this.type === 'accounting') this.angle = Math.PI / 2;
+            else if (this.type === 'logistics') this.angle = Math.PI;
+            else if (this.type === 'content') this.angle = Math.PI * 1.5;
+            
+            // Разводим радиусы орбит и наклоны в 3D, чтобы плашки летали на разной высоте и не сливались
+            if (this.type === 'analytics') {
+                this.orbitRadiusX = 120;
+                this.orbitRadiusY = 24;
+                this.orbitTilt = -0.10;
+                this.scale = 0.85;
+            } else if (this.type === 'accounting') {
+                this.orbitRadiusX = 95;
+                this.orbitRadiusY = 32;
+                this.orbitTilt = 0.06;
+                this.scale = 0.90;
+            } else if (this.type === 'logistics') {
+                this.orbitRadiusX = 130;
+                this.orbitRadiusY = 20;
+                this.orbitTilt = -0.04;
+                this.scale = 0.82;
+            } else if (this.type === 'content') {
+                this.orbitRadiusX = 108;
+                this.orbitRadiusY = 28;
+                this.orbitTilt = 0.12;
+                this.scale = 0.88;
             }
-            
-            this.orbitRadiusX = 110;
-            this.orbitRadiusY = 32;
-            
-            if (this.type === 'analytics') this.orbitTilt = -0.05;
-            else if (this.type === 'accounting') this.orbitTilt = 0.05;
-            else if (this.type === 'logistics') this.orbitTilt = -0.11;
-            else if (this.type === 'content') this.orbitTilt = 0.09;
             
             this.opacity = 0.85;
             this.maxOpacity = 0.85;
             this.life = 0;
             this.maxLife = Infinity;
-            this.scale = 0.90;
-            this.tilt = 0.04;
+            this.tilt = 0.03;
             
-            if (this.type === 'analytics') this.speed = 0.007;
-            else if (this.type === 'accounting') this.speed = 0.010;
-            else if (this.type === 'logistics') this.speed = 0.006;
-            else if (this.type === 'content') this.speed = 0.009;
+            // Одинаковая скорость для всех плашек, чтобы они вращались синхронно и никогда не сближались в кучу!
+            this.speed = 0.007; 
         }
 
         update() {
