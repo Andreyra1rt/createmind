@@ -1,5 +1,26 @@
 // Инициализация Telegram WebApp SDK
-const tg = window.Telegram.WebApp;
+const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : {
+    ready: () => {},
+    expand: () => {},
+    onEvent: () => {},
+    colorScheme: 'dark',
+    initDataUnsafe: { user: { language_code: 'ru' } },
+    themeParams: { button_color: '#2563eb', button_text_color: '#ffffff' },
+    MainButton: {
+        show: () => {},
+        hide: () => {},
+        onClick: () => {},
+        setParams: () => {}
+    },
+    openTelegramLink: (link) => window.open(link, '_blank'),
+    showPopup: (params, callback) => {
+        if (confirm(params.message)) {
+            if (callback) callback('send');
+        } else {
+            if (callback) callback('cancel');
+        }
+    }
+};
 
 // КОНФИГУРАЦИЯ: Замените на ваш юзернейм в Telegram (без символа @)
 const DEVELOPER_USERNAME = 'your_telegram_username'; 
