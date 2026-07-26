@@ -4,6 +4,51 @@ const tg = window.Telegram.WebApp;
 // КОНФИГУРАЦИЯ: Замените на ваш юзернейм в Telegram (без символа @)
 const DEVELOPER_USERNAME = 'your_telegram_username'; 
 
+// Polyfill for CanvasRenderingContext2D.roundRect to support older browsers
+if (typeof CanvasRenderingContext2D.prototype.roundRect !== 'function') {
+    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, radii) {
+        if (radii === undefined || radii === null) radii = 0;
+        let rTopLeft = 0, rTopRight = 0, rBottomRight = 0, rBottomLeft = 0;
+        if (Array.isArray(radii)) {
+            if (radii.length === 1) {
+                rTopLeft = rTopRight = rBottomRight = rBottomLeft = radii[0];
+            } else if (radii.length === 2) {
+                rTopLeft = rBottomRight = radii[0];
+                rTopRight = rBottomLeft = radii[1];
+            } else if (radii.length === 3) {
+                rTopLeft = radii[0];
+                rTopRight = rBottomLeft = radii[1];
+                rBottomRight = radii[2];
+            } else if (radii.length >= 4) {
+                rTopLeft = radii[0];
+                rTopRight = radii[1];
+                rBottomRight = radii[2];
+                rBottomLeft = radii[3];
+            }
+        } else {
+            rTopLeft = rTopRight = rBottomRight = rBottomLeft = radii;
+        }
+
+        const maxRadius = Math.min(w / 2, h / 2);
+        rTopLeft = Math.min(maxRadius, Math.max(0, rTopLeft));
+        rTopRight = Math.min(maxRadius, Math.max(0, rTopRight));
+        rBottomRight = Math.min(maxRadius, Math.max(0, rBottomRight));
+        rBottomLeft = Math.min(maxRadius, Math.max(0, rBottomLeft));
+
+        this.moveTo(x + rTopLeft, y);
+        this.lineTo(x + w - rTopRight, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + rTopRight);
+        this.lineTo(x + w, y + h - rBottomRight);
+        this.quadraticCurveTo(x + w, y + h, x + w - rBottomRight, y + h);
+        this.lineTo(x + rBottomLeft, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - rBottomLeft);
+        this.lineTo(x, y + rTopLeft);
+        this.quadraticCurveTo(x, y, x + rTopLeft, y);
+        this.closePath();
+        return this;
+    };
+}
+
 // Сообщаем Telegram, что приложение готово и разворачиваем его на весь экран
 tg.ready();
 tg.expand();
