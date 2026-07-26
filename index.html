@@ -183,6 +183,105 @@
             transform: translateX(-50%) translateY(0) scale(1);
         }
 
+        /* ─── CHATGPT INPUT BAR ──────────────────────── */
+        .chatgpt-input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 380px;
+            margin: 15px auto 0;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 6px 12px;
+            backdrop-filter: blur(14px);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 5;
+            position: relative;
+        }
+
+        .chatgpt-input-container:focus-within {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.15), 0 10px 30px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chatgpt-input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 10px;
+            font-family: inherit;
+        }
+
+        .chatgpt-input-field::placeholder {
+            color: var(--text-muted);
+            opacity: 0.8;
+        }
+
+        .chatgpt-mic-btn, .chatgpt-send-btn {
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .chatgpt-mic-btn {
+            color: var(--text-muted);
+        }
+
+        .chatgpt-mic-btn:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        
+        .chatgpt-mic-btn.recording {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            animation: pulse-mic 1.4s infinite;
+        }
+
+        .chatgpt-send-btn {
+            color: #ffffff;
+            background: var(--accent);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .chatgpt-send-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .chatgpt-send-btn svg {
+            width: 14px;
+            height: 14px;
+            margin-left: 1px;
+            margin-bottom: -1px;
+        }
+
+        .chatgpt-mic-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        @keyframes pulse-mic {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         @media (prefers-color-scheme: light) {
             .lang-toggle {
                 background: rgba(0, 0, 0, 0.03);
@@ -829,13 +928,31 @@
                 </div>
             </div>
             
-            <div style="flex: 0.8; min-width: 300px; display: flex; justify-content: center; align-items: center;">
+            <div style="flex: 0.8; min-width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                 <div id="sphere-trigger" style="position: relative; width: 380px; height: 380px; margin: 0 auto; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 2;">
                     <div class="robot-speech-bubble" id="robot-bubble">
                         <span id="bubble-text">Какая у вас задача для меня?</span>
                     </div>
                     <canvas id="crystal-canvas" width="380" height="380" style="width: 380px; height: 380px; display: block;"></canvas>
                     <div id="sphere-glow-ring" style="position: absolute; inset: 0; border-radius: 50%; pointer-events: none; box-shadow: inset 0 0 60px rgba(99,102,241,0.18), 0 0 60px rgba(99,102,241,0.12); border: 1px solid rgba(255,255,255,0.07);"></div>
+                </div>
+
+                <!-- ChatGPT Style Input Bar -->
+                <div class="chatgpt-input-container">
+                    <button class="chatgpt-mic-btn" id="hero-voice-btn" title="Отправить голосовое">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                            <line x1="12" x2="12" y1="19" y2="22"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="hero-input-field" class="chatgpt-input-field" placeholder="Опишите вашу задачу..." data-translate-placeholder data-placeholder-ru="Опишите вашу задачу..." data-placeholder-en="Describe your task...">
+                    <button class="chatgpt-send-btn" id="hero-send-btn" title="Отправить сообщение">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" x2="11" y1="2" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1072,6 +1189,14 @@
                     el.innerHTML = text;
                 }
             });
+
+            // Переводим все плейсхолдеры ввода с data-translate-placeholder
+            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                const placeholder = el.getAttribute('data-placeholder-' + lang);
+                if (placeholder) {
+                    el.setAttribute('placeholder', placeholder);
+                }
+            });
             
             // Синхронизируем фразу робота
             const bubbleText = document.getElementById('bubble-text');
@@ -1123,6 +1248,6 @@
             if (e.key === 'Escape') closeModal();
         });
     </script>
-    <script src="app.js?v=2.30"></script>
+    <script src="app.js?v=2.40"></script>
 </body>
 </html>

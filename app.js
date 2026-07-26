@@ -801,6 +801,57 @@ function appendMessage(text, sender = 'bot') {
 // Speech Recognition (Распознавание речи)
 let recognition;
 let isRecording = false;
+let activeSpeechInput = null; // 'chat' или 'hero'
+
+const heroInput = document.getElementById('hero-input-field');
+const heroSend = document.getElementById('hero-send-btn');
+const heroVoice = document.getElementById('hero-voice-btn');
+
+function handleHeroSend() {
+    if (!heroInput) return;
+    const text = heroInput.value.trim();
+    if (!text) {
+        showToast(translations[currentLang].empty_text_error, 'error');
+        return;
+    }
+    
+    // Копируем текст в чат Workspace
+    if (chatInput) {
+        chatInput.value = text;
+    }
+    heroInput.value = '';
+    
+    // Переключаем приложение в Workspace
+    const appRoot = document.getElementById('app-root');
+    const workspaceSec = document.getElementById('workspace');
+    if (appRoot && workspaceSec) {
+        appRoot.classList.remove('state-hero');
+        appRoot.classList.add('state-workspace');
+        workspaceSec.classList.remove('collapsed');
+        
+        // Запускаем анализ и генерацию роадмапа
+        handleSendMessage();
+        
+        // Плавный скролл к чату
+        setTimeout(() => {
+            const chatEl = document.getElementById('chat-window');
+            if (chatEl) {
+                chatEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 300);
+    }
+}
+
+if (heroSend) {
+    heroSend.addEventListener('click', handleHeroSend);
+}
+if (heroInput) {
+    heroInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleHeroSend();
+        }
+    });
+}
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -811,19 +862,31 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
     recognition.onstart = () => {
         isRecording = true;
-        voiceBtn.classList.add('recording');
-        chatInput.placeholder = 'Слушаю вас... Говорите';
+        if (activeSpeechInput === 'chat') {
+            if (voiceBtn) voiceBtn.classList.add('recording');
+            if (chatInput) chatInput.placeholder = currentLang === 'en' ? 'Listening... Speak' : 'Слушаю вас... Говорите';
+        } else if (activeSpeechInput === 'hero') {
+            if (heroVoice) heroVoice.classList.add('recording');
+            if (heroInput) heroInput.placeholder = currentLang === 'en' ? 'Listening... Speak' : 'Слушаю вас... Говорите';
+        }
     };
 
     recognition.onresult = (event) => {
         const resultText = event.results[0][0].transcript;
-        chatInput.value = resultText;
-        showToast('Речь успешно распознана!', 'success');
+        if (activeSpeechInput === 'chat') {
+            if (chatInput) chatInput.value = resultText;
+        } else if (activeSpeechInput === 'hero') {
+            if (heroInput) {
+                heroInput.value = resultText;
+                handleHeroSend(); // Автоматическая отправка при завершении речи
+            }
+        }
+        showToast(currentLang === 'en' ? 'Speech recognized successfully!' : 'Речь успешно распознана!', 'success');
     };
 
     recognition.onerror = (event) => {
         console.error('Speech recognition error', event.error);
-        showToast('Ошибка распознавания речи.', 'error');
+        showToast(currentLang === 'en' ? 'Speech recognition error.' : 'Ошибка распознавания речи.', 'error');
         stopVoiceRecording();
     };
 
@@ -831,27 +894,45 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         stopVoiceRecording();
     };
 } else {
-    if (voiceBtn) {
-        voiceBtn.addEventListener('click', () => {
-            showToast('Голосовой ввод не поддерживается вашим браузером.', 'error');
-        });
-    }
+    const noSupportCallback = () => {
+        showToast(currentLang === 'en' ? 'Voice input is not supported by your browser.' : 'Голосовой ввод не поддерживается вашим браузером.', 'error');
+    };
+    if (voiceBtn) voiceBtn.addEventListener('click', noSupportCallback);
+    if (heroVoice) heroVoice.addEventListener('click', noSupportCallback);
 }
 
 function stopVoiceRecording() {
     isRecording = false;
-    voiceBtn.classList.remove('recording');
-    chatInput.placeholder = 'Опишите вашу идею...';
+    if (voiceBtn) voiceBtn.classList.remove('recording');
+    if (heroVoice) heroVoice.classList.remove('recording');
+    
+    if (chatInput) chatInput.placeholder = currentLang === 'en' ? 'Describe your idea...' : 'Опишите вашу идею...';
+    if (heroInput) heroInput.placeholder = currentLang === 'en' ? 'Describe your task...' : 'Опишите вашу задачу...';
+    
+    activeSpeechInput = null;
 }
 
-if (recognition && voiceBtn) {
-    voiceBtn.addEventListener('click', () => {
-        if (isRecording) {
-            recognition.stop();
-        } else {
-            recognition.start();
-        }
-    });
+if (recognition) {
+    if (voiceBtn) {
+        voiceBtn.addEventListener('click', () => {
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                activeSpeechInput = 'chat';
+                recognition.start();
+            }
+        });
+    }
+    if (heroVoice) {
+        heroVoice.addEventListener('click', () => {
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                activeSpeechInput = 'hero';
+                recognition.start();
+            }
+        });
+    }
 }
 
 // Отправка идеи
