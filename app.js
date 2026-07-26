@@ -1190,8 +1190,9 @@ function renderRoadmap(ideaText, data) {
 
     // Класс для парящих документов и задач вокруг ИИ
     class FloatingItem {
-        constructor(isInteractive = false) {
-            this.isInteractive = isInteractive;
+        constructor(type) {
+            this.type = type; // 'analytics', 'accounting', 'logistics', 'content'
+            this.isInteractive = true;
             this.isFocused = false;
             this.focusProgress = 0;
             
@@ -1205,84 +1206,46 @@ function renderRoadmap(ideaText, data) {
         }
 
         reset(isInitial = false) {
-            this.angle = Math.random() * Math.PI * 2;
-            
-            // Орбита вокруг сферы (радиус X больше, Y сплюснут для 3D наклона)
-            this.orbitRadiusX = 75 + Math.random() * 65; // Увеличенный разброс
-            this.orbitRadiusY = 20 + Math.random() * 25; // Увеличенный разброс
-            this.orbitTilt = (Math.random() - 0.5) * 0.28; // Наклон плоскости орбиты в 3D!
-            
-            // Скорость движения по орбите
-            this.speed = (0.005 + Math.random() * 0.015) * (Math.random() > 0.5 ? 1 : -1);
-            
-            // Для интерактивного элемента всегда закреплен "Счет"
-            if (this.isInteractive) {
-                this.orbitRadiusX = 90;
-                this.orbitRadiusY = 25;
-                this.orbitTilt = 0.04;
-                this.text = (currentLang === 'en') ? '💰 Invoice.pdf' : '💰 Счет.pdf';
-                this.opacity = 0.85;
-                this.maxOpacity = 0.85;
-                this.life = 0;
-                this.maxLife = Infinity; // Интерактивный документ живет вечно!
-                this.scale = 0.95;
-                this.tilt = 0.05;
-                this.speed = 0.012; // Фиксированная предсказуемая скорость для интерактива
+            if (isInitial) {
+                if (this.type === 'analytics') this.angle = 0;
+                else if (this.type === 'accounting') this.angle = Math.PI / 2;
+                else if (this.type === 'logistics') this.angle = Math.PI;
+                else if (this.type === 'content') this.angle = Math.PI * 1.5;
             } else {
-                const pool = ['📄 Contract.pdf'];
-                const poolRu = ['📄 Договор.pdf'];
-                const activePool = (currentLang === 'en') ? pool : poolRu;
-                this.text = activePool[Math.floor(Math.random() * activePool.length)];
-                
-                this.opacity = 0;
-                this.maxOpacity = 0.15; // Очень слабый объект
-                this.life = 0;
-                this.maxLife = 220 + Math.random() * 120;
-                
-                if (isInitial) {
-                    this.life = Math.random() * this.maxLife;
-                    this.opacity = this.maxOpacity;
-                }
-                
-                this.scale = 0.72 + Math.random() * 0.28;
-                this.tilt = (Math.random() - 0.5) * 0.15;
+                this.angle = Math.random() * Math.PI * 2;
             }
+            
+            this.orbitRadiusX = 110;
+            this.orbitRadiusY = 32;
+            
+            if (this.type === 'analytics') this.orbitTilt = -0.05;
+            else if (this.type === 'accounting') this.orbitTilt = 0.05;
+            else if (this.type === 'logistics') this.orbitTilt = -0.11;
+            else if (this.type === 'content') this.orbitTilt = 0.09;
+            
+            this.opacity = 0.85;
+            this.maxOpacity = 0.85;
+            this.life = 0;
+            this.maxLife = Infinity;
+            this.scale = 0.90;
+            this.tilt = 0.04;
+            
+            if (this.type === 'analytics') this.speed = 0.007;
+            else if (this.type === 'accounting') this.speed = 0.010;
+            else if (this.type === 'logistics') this.speed = 0.006;
+            else if (this.type === 'content') this.speed = 0.009;
         }
 
         update() {
-            // Если сфокусирован, останавливаем движение и плавно увеличиваем focusProgress
             if (this.isFocused) {
                 if (this.focusProgress < 1) this.focusProgress += 0.08;
             } else {
                 if (this.focusProgress > 0) this.focusProgress -= 0.08;
-                // Двигаем только если не сфокусирован
                 this.angle += this.speed * window.ambientSpeedFactor;
-                if (this.maxLife !== Infinity) {
-                    this.life++;
-                }
-            }
-
-            // Прозрачность
-            if (this.maxLife !== Infinity) {
-                if (this.life < 40) {
-                    this.opacity = (this.life / 40) * this.maxOpacity;
-                } else if (this.life > this.maxLife - 40) {
-                    this.opacity = ((this.maxLife - this.life) / 40) * this.maxOpacity;
-                } else {
-                    this.opacity = this.maxOpacity;
-                }
-
-                if (this.life >= this.maxLife) {
-                    this.reset(false);
-                }
-            } else {
-                // Интерактивный документ плавно подсвечивается до 1.0 при фокусе
-                this.opacity = this.maxOpacity + (1.0 - this.maxOpacity) * this.focusProgress;
             }
         }
 
         draw(ctx, scx, scy, baseRadius, detachFactor = 1.0) {
-            // Координаты по наклонной 3D-орбите с учетом отрыва при скролле (detachFactor)
             const rawX = Math.cos(this.angle) * this.orbitRadiusX * detachFactor;
             const rawY = Math.sin(this.angle) * this.orbitRadiusY * detachFactor;
             const cosT = Math.cos(this.orbitTilt);
@@ -1291,21 +1254,17 @@ function renderRoadmap(ideaText, data) {
             const orbitX = scx + (rawX * cosT - rawY * sinT);
             const orbitY = scy + (rawX * sinT + rawY * cosT) - 10;
             
-            // Фокусные координаты (внизу сферы, прямо перед лицом)
             const targetX = scx;
             const targetY = scy + baseRadius * 0.55;
 
-            // Интерполяция координат
             const x = orbitX + (targetX - orbitX) * this.focusProgress;
             const y = orbitY + (targetY - orbitY) * this.focusProgress;
             
-            // Z-параллакс для обычного состояния
             const z = Math.sin(this.angle);
             const depthScale = 1.0 + z * 0.15;
             
-            // Интерполяция масштаба и наклона
-            const normalScale = this.scale * (this.isInteractive ? 1.0 : depthScale);
-            const targetScale = 2.0;
+            const normalScale = this.scale * depthScale;
+            const targetScale = 1.6;
             const finalScale = normalScale + (targetScale - normalScale) * this.focusProgress;
             
             const finalTilt = this.tilt * (1 - this.focusProgress);
@@ -1317,14 +1276,15 @@ function renderRoadmap(ideaText, data) {
             
             ctx.globalAlpha = this.opacity;
             
-            // Переключаем текст при фокусе
-            let displayText = this.customText || this.text;
-            if (this.isInteractive && !this.customText) {
-                // Если язык сменился, обновляем текст "Счета"
-                this.text = (currentLang === 'en') ? '💰 Invoice.pdf' : '💰 Счет.pdf';
-                if (this.focusProgress > 0.6) {
-                    displayText = (currentLang === 'en') ? '💰 View Invoice 🧾' : '💰 Посмотреть счет 🧾';
-                }
+            let displayText = "";
+            if (this.type === 'analytics') {
+                displayText = (currentLang === 'en') ? '📈 Analytics' : '📈 Аналитика';
+            } else if (this.type === 'accounting') {
+                displayText = (currentLang === 'en') ? '📊 Accounting' : '📊 Бухгалтерия';
+            } else if (this.type === 'logistics') {
+                displayText = (currentLang === 'en') ? '📦 Logistics' : '📦 Логистика';
+            } else if (this.type === 'content') {
+                displayText = (currentLang === 'en') ? '✍️ Content' : '✍️ Контент';
             }
             
             ctx.font = '800 8.5px monospace';
@@ -1430,10 +1390,10 @@ function renderRoadmap(ideaText, data) {
     }
 
     const floatingItems = [
-        new FloatingItem(false),
-        new FloatingItem(true),
-        new FloatingItem(false),
-        new FloatingItem(false)
+        new FloatingItem('analytics'),
+        new FloatingItem('accounting'),
+        new FloatingItem('logistics'),
+        new FloatingItem('content')
     ];
 
     function drawSphere(time) {
@@ -1968,83 +1928,97 @@ function renderRoadmap(ideaText, data) {
             }
         }
 
-        // Управляем фокусом интерактивного элемента (floatingItems[1])
-        const isHovered = pointer.x !== null && pointer.y !== null && Math.sqrt(pointer.x * pointer.x + pointer.y * pointer.y) < baseRadius * 1.35;
-        const interactiveItem = floatingItems[1];
-        if (interactiveItem) {
-            interactiveItem.isFocused = isHovered;
-            
-            // Проверяем, наведена ли мышь на саму сфокусированную плашку
-            let isOverItem = false;
-            if (isHovered && interactiveItem.focusProgress > 0.8) {
-                const mx = cx + pointer.x;
-                const my = cy + pointer.y;
-                if (
-                    mx >= interactiveItem.screenX - interactiveItem.width / 2 &&
-                    mx <= interactiveItem.screenX + interactiveItem.width / 2 &&
-                    my >= interactiveItem.screenY - interactiveItem.height / 2 &&
-                    my <= interactiveItem.screenY + interactiveItem.height / 2
-                ) {
-                    isOverItem = true;
-                }
+        // Словарь фраз робота для каждой плашки
+        const itemSpeech = {
+            ru: {
+                analytics: "Хотите настроить аналитику продаж?",
+                accounting: "Автоматизировать выставление счетов?",
+                logistics: "Оптимизировать маршруты и склад?",
+                content: "Создавать контент с помощью AI?",
+                default: "Какая у вас задача для меня?"
+            },
+            en: {
+                analytics: "Want to set up sales analytics?",
+                accounting: "Automate invoice generation?",
+                logistics: "Optimize routes and warehouse?",
+                content: "Create content using AI?",
+                default: "What is your task for me?"
             }
-            canvas.style.cursor = isOverItem ? 'pointer' : 'default';
+        };
+
+        let speechBubbleTimer = null;
+        window.showRobotSpeech = function(type) {
+            const bubble = document.getElementById('robot-bubble');
+            const bubbleText = document.getElementById('bubble-text');
+            if (!bubble || !bubbleText) return;
+
+            const lang = localStorage.getItem('preferred-lang') || 'ru';
+            const text = itemSpeech[lang][type] || itemSpeech[lang].default;
+
+            bubbleText.textContent = text;
+            bubble.classList.add('force-show');
+
+            // Запускаем кратковременную реакцию робота (мигание-кивание)
+            window.setHeroState('PROCESSING');
+            setTimeout(() => {
+                window.setHeroState('AMBIENT');
+            }, 1200);
+
+            if (speechBubbleTimer) clearTimeout(speechBubbleTimer);
+            speechBubbleTimer = setTimeout(() => {
+                bubble.classList.remove('force-show');
+                bubbleText.textContent = lang === 'en' ? itemSpeech.en.default : itemSpeech.ru.default;
+            }, 5000);
+        };
+
+        // Управляем фокусом плашек при наведении
+        let isOverAnyItem = false;
+        if (pointer.x !== null && pointer.y !== null) {
+            const mx = cx + pointer.x;
+            const my = cy + pointer.y;
+
+            floatingItems.forEach(item => {
+                if (
+                    mx >= item.screenX - item.width / 2 &&
+                    mx <= item.screenX + item.width / 2 &&
+                    my >= item.screenY - item.height / 2 &&
+                    my <= item.screenY + item.height / 2
+                ) {
+                    isOverAnyItem = true;
+                    item.isFocused = true;
+                } else {
+                    item.isFocused = false;
+                }
+            });
+        } else {
+            floatingItems.forEach(item => item.isFocused = false);
         }
+        canvas.style.cursor = isOverAnyItem ? 'pointer' : 'default';
     }
 
-    // Обработка клика по интерактивной плашке
+    // Обработка клика по интерактивным плашкам
     canvas.addEventListener('click', (e) => {
-        const interactiveItem = floatingItems[1];
-        if (interactiveItem && interactiveItem.isFocused && interactiveItem.focusProgress > 0.8) {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-            
-            // Учитываем pixel ratio и масштаб canvas
-            const dpr = window.devicePixelRatio || 1;
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-            const cxCanvas = (clickX * scaleX) / dpr;
-            const cyCanvas = (clickY * scaleY) / dpr;
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+        
+        const dpr = window.devicePixelRatio || 1;
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const cxCanvas = (clickX * scaleX) / dpr;
+        const cyCanvas = (clickY * scaleY) / dpr;
 
+        floatingItems.forEach(item => {
             if (
-                cxCanvas >= interactiveItem.screenX - interactiveItem.width / 2 &&
-                cxCanvas <= interactiveItem.screenX + interactiveItem.width / 2 &&
-                cyCanvas >= interactiveItem.screenY - interactiveItem.height / 2 &&
-                cyCanvas <= interactiveItem.screenY + interactiveItem.height / 2
+                cxCanvas >= item.screenX - item.width / 2 &&
+                cxCanvas <= item.screenX + item.width / 2 &&
+                cyCanvas >= item.screenY - item.height / 2 &&
+                cyCanvas <= item.screenY + item.height / 2
             ) {
-                // Клик по счету!
-                const isEn = (currentLang === 'en');
-                const msg = isEn ? 'Opening interactive CRM invoice...' : 'Открываем интерактивный счет в CRM...';
-                showToast(msg, 'success');
-                
-                // Переходим к Workflow и раскрываем Workspace
-                const appRoot = document.getElementById('app-root');
-                const workspaceSec = document.getElementById('workspace');
-                if (appRoot && workspaceSec) {
-                    appRoot.classList.remove('state-hero');
-                    appRoot.classList.add('state-workspace');
-                    workspaceSec.classList.remove('collapsed');
-                    
-                    // Плавный скролл к шагу CRM/Invoice
-                    setTimeout(() => {
-                        const stepEl = document.getElementById('flow-invoice');
-                        if (stepEl) {
-                            stepEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            
-                            // Подсвечиваем шаг
-                            stepEl.classList.add('active');
-                            stepEl.style.borderColor = 'rgba(99, 102, 241, 0.8)';
-                            stepEl.style.boxShadow = '0 0 25px rgba(99, 102, 241, 0.5)';
-                            setTimeout(() => {
-                                stepEl.style.borderColor = '';
-                                stepEl.style.boxShadow = '';
-                            }, 3500);
-                        }
-                    }, 500);
-                }
+                // Воспроизводим реакцию ИИ
+                window.showRobotSpeech(item.type);
             }
-        }
+        });
     });
 
     window.isCanvasRunning = true;

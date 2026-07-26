@@ -177,7 +177,8 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        #sphere-trigger:hover .robot-speech-bubble {
+        #sphere-trigger:hover .robot-speech-bubble,
+        .robot-speech-bubble.force-show {
             opacity: 1;
             transform: translateX(-50%) translateY(0) scale(1);
         }
@@ -1122,6 +1123,6 @@
             if (e.key === 'Escape') closeModal();
         });
     </script>
-    <script src="app.js?v=2.01"></script>
+    <script src="app.js?v=2.10"></script>
 </body>
 </html>
