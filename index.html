@@ -188,12 +188,12 @@
             display: flex;
             align-items: center;
             width: 100%;
-            max-width: 500px;
+            max-width: 575px; /* Увеличено на 15% с 500px */
             margin: 0;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 28px;
-            padding: 6px 12px;
+            border-radius: 32px; /* Увеличено с 28px */
+            padding: 8px 16px; /* Увеличено на ~15% с 6px 12px */
             backdrop-filter: blur(14px);
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -213,9 +213,9 @@
             border: none;
             outline: none;
             color: var(--text);
-            font-size: 14px;
+            font-size: 16px; /* Увеличено на 15% с 14px */
             font-weight: 500;
-            padding: 8px 10px;
+            padding: 8px 12px;
             font-family: inherit;
         }
 
@@ -232,7 +232,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 8px;
+            padding: 9px; /* Увеличено с 8px */
             border-radius: 50%;
             transition: all 0.2s ease;
         }
@@ -265,15 +265,15 @@
         }
 
         .chatgpt-send-btn svg {
-            width: 14px;
-            height: 14px;
+            width: 16px; /* Увеличено на 15% с 14px */
+            height: 16px; /* Увеличено на 15% с 14px */
             margin-left: 1px;
             margin-bottom: -1px;
         }
 
         .chatgpt-mic-btn svg {
-            width: 16px;
-            height: 16px;
+            width: 18px; /* Увеличено на 15% с 16px */
+            height: 18px; /* Увеличено на 15% с 16px */
         }
 
         @keyframes pulse-mic {
@@ -1316,6 +1316,6 @@
             if (e.key === 'Escape') closeModal();
         });
     </script>
-    <script src="app.js?v=2.60"></script>
+    <script src="app.js?v=2.70"></script>
 </body>
 </html>
