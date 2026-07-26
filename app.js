@@ -1032,8 +1032,9 @@ function renderRoadmap(ideaText, data) {
     // Поддержка высокой плотности пикселей (High DPI Retina)
     function resize() {
         const dpr = window.devicePixelRatio || 1;
-        width = container.clientWidth;
-        height = container.clientHeight;
+        // Используем offsetWidth как fallback на случай если контейнер ещё не отрендерен
+        width = container.clientWidth || container.offsetWidth || canvas.offsetWidth || 380;
+        height = container.clientHeight || container.offsetHeight || canvas.offsetHeight || 380;
         canvas.width = width * dpr;
         canvas.height = height * dpr;
         canvas.style.width = width + 'px';
@@ -1042,6 +1043,12 @@ function renderRoadmap(ideaText, data) {
     }
     
     resize();
+    // Повторная инициализация после полной загрузки DOM на случай delayed render
+    if (document.readyState !== 'complete') {
+        window.addEventListener('load', resize);
+    } else {
+        setTimeout(resize, 50);
+    }
     window.addEventListener('resize', resize);
 
     // Переменные состояния анимации
@@ -1351,8 +1358,6 @@ function renderRoadmap(ideaText, data) {
     ];
 
     function drawSphere(time) {
-        const dpr = window.devicePixelRatio || 1;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, width, height);
 
         const cx = width / 2;
