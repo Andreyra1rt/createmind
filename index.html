@@ -697,22 +697,33 @@
     </nav>
 
     <!-- HERO -->
-    <section class="hero">
-        <div class="hero-badge">
-            <span class="hero-badge-dot"></span>
-            AI-автоматизация для бизнеса
-        </div>
-        <h1>
-            Ваш бизнес работает<br>
-            на <span class="accent">ручном труде</span>.<br>
-            Пора это изменить.
-        </h1>
-        <p>
-            Внедряем искусственный интеллект в реальные процессы компаний — от ответов клиентам до бухгалтерии и склада. Без переписывания всего с нуля.
-        </p>
-        <div class="hero-actions">
-            <button class="btn-primary" onclick="openModal()">Обсудить мой бизнес</button>
-            <a class="btn-secondary" href="#cases">Примеры задач</a>
+    <section class="hero" style="max-width: 1100px; margin: 0 auto; padding: 60px 24px 80px; text-align: left;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap;">
+            <div style="flex: 1.2; min-width: 320px;">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    AI-автоматизация для бизнеса
+                </div>
+                <h1 style="text-align: left; font-size: clamp(36px, 6vw, 64px);">
+                    Ваш бизнес работает<br>
+                    на <span class="accent">ручном труде</span>.<br>
+                    Пора это изменить.
+                </h1>
+                <p style="margin: 0 0 48px 0; max-width: 540px;">
+                    Внедряем искусственный интеллект в реальные процессы компаний — от ответов клиентам до бухгалтерии и склада. Без переписывания всего с нуля.
+                </p>
+                <div class="hero-actions" style="justify-content: flex-start;">
+                    <button class="btn-primary" onclick="openModal()">Обсудить мой бизнес</button>
+                    <a class="btn-secondary" href="#cases">Примеры задач</a>
+                </div>
+            </div>
+            
+            <div style="flex: 0.8; min-width: 280px; display: flex; justify-content: center; align-items: center;">
+                <div class="crystal-sphere-container" id="sphere-trigger" style="position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center;">
+                    <canvas id="crystal-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                    <div class="sphere-glow-ring" style="position: absolute; inset: 0; border-radius: 50%; pointer-events: none; box-shadow: inset 0 0 50px rgba(99, 102, 241, 0.15), 0 0 50px rgba(99, 102, 241, 0.1); border: 1px solid rgba(255,255,255,0.05);"></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -954,5 +965,6 @@
             if (e.key === 'Escape') closeModal();
         });
     </script>
+    <script src="app.js?v=1.14"></script>
 </body>
 </html>
