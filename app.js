@@ -1221,28 +1221,11 @@ function renderRoadmap(ideaText, data) {
             else if (this.type === 'logistics') this.angle = Math.PI;
             else if (this.type === 'content') this.angle = Math.PI * 1.5;
             
-            // Разводим радиусы орбит и наклоны в 3D, чтобы плашки летали на разной высоте и не сливались
-            if (this.type === 'analytics') {
-                this.orbitRadiusX = 120;
-                this.orbitRadiusY = 24;
-                this.orbitTilt = -0.10;
-                this.scale = 0.85;
-            } else if (this.type === 'accounting') {
-                this.orbitRadiusX = 95;
-                this.orbitRadiusY = 32;
-                this.orbitTilt = 0.06;
-                this.scale = 0.90;
-            } else if (this.type === 'logistics') {
-                this.orbitRadiusX = 130;
-                this.orbitRadiusY = 20;
-                this.orbitTilt = -0.04;
-                this.scale = 0.82;
-            } else if (this.type === 'content') {
-                this.orbitRadiusX = 108;
-                this.orbitRadiusY = 28;
-                this.orbitTilt = 0.12;
-                this.scale = 0.88;
-            }
+            // Единая 3D-орбита (кольцо) для предотвращения любых пересечений
+            this.orbitRadiusX = 115;
+            this.orbitRadiusY = 28;
+            this.orbitTilt = 0.05;
+            this.scale = 0.88;
             
             this.opacity = 0.85;
             this.maxOpacity = 0.85;
@@ -1250,7 +1233,7 @@ function renderRoadmap(ideaText, data) {
             this.maxLife = Infinity;
             this.tilt = 0.03;
             
-            // Одинаковая скорость для всех плашек, чтобы они вращались синхронно и никогда не сближались в кучу!
+            // Абсолютно одинаковая скорость для всех плашек, чтобы они двигались синхронно гуськом
             this.speed = 0.007; 
         }
 
