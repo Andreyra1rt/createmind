@@ -764,16 +764,20 @@ const dynamicRoadmapSection = document.getElementById('dynamic-roadmap');
 const dynamicRoadmapContent = document.getElementById('dynamic-roadmap-content');
 
 // Открытие/закрытие чата
-chatTrigger.addEventListener('click', () => {
-    chatWindow.classList.toggle('hidden');
-    // Скрываем пульсацию на бабле после первого открытия
-    const pulse = chatTrigger.querySelector('.trigger-pulse');
-    if (pulse) pulse.remove();
-});
+if (chatTrigger) {
+    chatTrigger.addEventListener('click', () => {
+        if (chatWindow) chatWindow.classList.toggle('hidden');
+        // Скрываем пульсацию на бабле после первого открытия
+        const pulse = chatTrigger.querySelector('.trigger-pulse');
+        if (pulse) pulse.remove();
+    });
+}
 
-chatClose.addEventListener('click', () => {
-    chatWindow.classList.add('hidden');
-});
+if (chatClose) {
+    chatClose.addEventListener('click', () => {
+        if (chatWindow) chatWindow.classList.add('hidden');
+    });
+}
 
 // Добавление сообщения в чат
 function appendMessage(text, sender = 'bot') {
@@ -818,9 +822,11 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         stopVoiceRecording();
     };
 } else {
-    voiceBtn.addEventListener('click', () => {
-        showToast('Голосовой ввод не поддерживается вашим браузером.', 'error');
-    });
+    if (voiceBtn) {
+        voiceBtn.addEventListener('click', () => {
+            showToast('Голосовой ввод не поддерживается вашим браузером.', 'error');
+        });
+    }
 }
 
 function stopVoiceRecording() {
@@ -829,7 +835,7 @@ function stopVoiceRecording() {
     chatInput.placeholder = 'Опишите вашу идею...';
 }
 
-if (recognition) {
+if (recognition && voiceBtn) {
     voiceBtn.addEventListener('click', () => {
         if (isRecording) {
             recognition.stop();
@@ -874,12 +880,16 @@ function handleSendMessage() {
     }, 3600);
 }
 
-chatSend.addEventListener('click', handleSendMessage);
-chatInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        handleSendMessage();
-    }
-});
+if (chatSend) {
+    chatSend.addEventListener('click', handleSendMessage);
+}
+if (chatInput) {
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    });
+}
 
 // Генерация роадмапа по ключевым словам
 function generateRoadmap(userInput) {
@@ -1001,7 +1011,9 @@ function renderRoadmap(ideaText, data) {
     }, 200);
 
     // Вешаем обработчик на кнопку запуска
-    document.getElementById('approve-roadmap-btn').addEventListener('click', () => {
+    const approveBtn = document.getElementById('approve-roadmap-btn');
+    if (approveBtn) {
+        approveBtn.addEventListener('click', () => {
         // Заполняем поле ТЗ в форме обратной связи
         if (isEn) {
             projectDescInput.value = `Approved AI roadmap for idea "${ideaText}":\n` +
@@ -1025,6 +1037,7 @@ function renderRoadmap(ideaText, data) {
             clientNameInput.focus();
         }, 800);
     });
+    }
 }
 
 // ==================== ИНТЕРАКТИВНАЯ СФЕРА (3D CRYSTAL SPHERE & AI EMPLOYEE) ====================
