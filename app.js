@@ -1343,9 +1343,16 @@ function renderRoadmap(ideaText, data) {
         dataFlowStart = Date.now();
     }
 
-    const floatingItems = [];
+    const floatingItems = [
+        new FloatingItem(false),
+        new FloatingItem(true),
+        new FloatingItem(false),
+        new FloatingItem(false)
+    ];
 
     function drawSphere(time) {
+        const dpr = window.devicePixelRatio || 1;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, width, height);
 
         const cx = width / 2;
