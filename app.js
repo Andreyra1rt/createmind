@@ -1585,7 +1585,7 @@ function renderRoadmap(ideaText, data) {
             rotateAngle = cinematicRot;
         } else {
             // Обычный интерактивный режим AMBIENT (или по умолчанию)
-            // Слежение за курсором работает ТОЛЬКО в AMBIENT
+            // Слежение за курсором работает по всему экрану
             const distance = (pointer.x !== null && pointer.y !== null) 
                 ? Math.sqrt(pointer.x * pointer.x + pointer.y * pointer.y) 
                 : 999;
@@ -1594,13 +1594,14 @@ function renderRoadmap(ideaText, data) {
             let targetLookY = 0;
             let targetRot = 0;
 
-            if (pointer.x !== null && pointer.y !== null && distance < baseRadius * 1.55) {
+            if (pointer.x !== null && pointer.y !== null) {
                 const angle = Math.atan2(pointer.y, pointer.x);
-                const maxLook = 3.2 * robotScale;
-                const strength = Math.min(distance / 120, 1.0);
+                const maxLook = 4.8 * robotScale;
+                const strength = Math.min(distance / 200, 1.0);
                 targetLookX = Math.cos(angle) * maxLook * strength;
                 targetLookY = Math.sin(angle) * maxLook * strength;
-                targetRot = Math.max(-0.05, Math.min(0.05, (pointer.x / 180) * 0.05));
+                // Более заметный поворот головы (до ~14 градусов наклон)
+                targetRot = Math.max(-0.24, Math.min(0.24, (pointer.x / 320)));
             } else {
                 targetLookX = Math.sin(time * 0.6) * 1.4;
                 targetLookY = Math.cos(time * 0.9) * 0.9;
@@ -1615,6 +1616,44 @@ function renderRoadmap(ideaText, data) {
             lookOffsetY = cinematicLookY;
             rotateAngle = cinematicRot;
         }
+
+        const eyeColor = isEn ? '#2563eb' : '#a855f7';
+
+        // ------------------ ОТРЕСОВКА ТЕЛА РОБОТА (AI BODY) ------------------
+        ctx.save();
+        ctx.translate(scx, headY);
+        // Тело слегка покачивается вслед за головой
+        ctx.rotate(rotateAngle * 0.2);
+
+        // Шея
+        ctx.fillStyle = '#d4d4d8';
+        ctx.beginPath();
+        ctx.roundRect(-6 * robotScale, 15 * robotScale, 12 * robotScale, 18 * robotScale, 3 * robotScale);
+        ctx.fill();
+
+        // Маленькое туловище
+        const bodyW = 54 * robotScale;
+        const bodyH = 38 * robotScale;
+        const bodyGradient = ctx.createLinearGradient(-bodyW/2, 24 * robotScale, bodyW/2, (24 + bodyH) * robotScale);
+        bodyGradient.addColorStop(0, '#ffffff');
+        bodyGradient.addColorStop(0.5, '#e4e4e7');
+        bodyGradient.addColorStop(1, '#a1a1aa');
+        ctx.fillStyle = bodyGradient;
+        
+        ctx.beginPath();
+        ctx.roundRect(-bodyW/2, 24 * robotScale, bodyW, bodyH, [16 * robotScale, 16 * robotScale, 6 * robotScale, 6 * robotScale]);
+        ctx.fill();
+
+        // Светящееся ядро на груди
+        ctx.fillStyle = eyeColor;
+        ctx.shadowColor = eyeColor;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(0, 42 * robotScale, 5 * robotScale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0; // сбрасываем
+
+        ctx.restore();
 
         ctx.save();
         ctx.translate(scx, headY);
@@ -1665,7 +1704,6 @@ function renderRoadmap(ideaText, data) {
             isBlinking = true;
         }
 
-        const eyeColor = isEn ? '#2563eb' : '#a855f7';
         ctx.fillStyle = eyeColor;
         ctx.shadowColor = eyeColor;
         ctx.shadowBlur = 12;
