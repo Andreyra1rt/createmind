@@ -1027,8 +1027,21 @@ body {
     pointer-events: none;
 }
 
+.chat-window.minimized {
+    height: 57px !important;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.chat-header-actions button:hover {
+    color: var(--accent-color) !important;
+    opacity: 0.8;
+}
+
 /* Шапка чата */
 .chat-header {
+    cursor: move; /* показываем, что шапку можно перетаскивать */
+    user-select: none;
     padding: 14px 18px;
     background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid var(--card-border);

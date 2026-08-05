@@ -765,6 +765,7 @@ revealElements.forEach(element => {
 const chatTrigger = document.getElementById('chat-trigger');
 const chatWindow = document.getElementById('chat-window');
 const chatClose = document.getElementById('chat-close');
+const chatMinimize = document.getElementById('chat-minimize');
 const chatMessages = document.getElementById('chat-messages');
 const chatInput = document.getElementById('chat-input');
 const chatSend = document.getElementById('chat-send');
@@ -786,6 +787,136 @@ if (chatClose) {
     chatClose.addEventListener('click', () => {
         if (chatWindow) chatWindow.classList.add('hidden');
     });
+}
+
+// Сворачивание чата
+if (chatMinimize) {
+    chatMinimize.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (chatWindow) {
+            const isMinimized = chatWindow.classList.toggle('minimized');
+            chatMinimize.innerHTML = isMinimized ? '&#9634;' : '&#9472;'; // ▢ or ─
+            chatMinimize.title = isMinimized ? 'Развернуть' : 'Свернуть';
+        }
+    });
+}
+
+// Перетаскивание чата за шапку
+const chatHeader = document.querySelector('.chat-header');
+if (chatHeader && chatWindow) {
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let startLeft = 0;
+    let startTop = 0;
+
+    chatHeader.addEventListener('mousedown', (e) => {
+        // Игнорируем клики по кнопкам управления (закрыть, свернуть)
+        if (e.target.closest('.chat-header-actions')) return;
+
+        isDragging = true;
+        
+        // Получаем текущие координаты окна
+        const rect = chatWindow.getBoundingClientRect();
+        
+        chatWindow.style.position = 'fixed';
+        chatWindow.style.bottom = 'auto';
+        chatWindow.style.right = 'auto';
+        chatWindow.style.left = rect.left + 'px';
+        chatWindow.style.top = rect.top + 'px';
+        
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = rect.left;
+        startTop = rect.top;
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        
+        e.preventDefault();
+    });
+
+    function onMouseMove(e) {
+        if (!isDragging) return;
+        
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        
+        let newLeft = startLeft + deltaX;
+        let newTop = startTop + deltaY;
+        
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const rect = chatWindow.getBoundingClientRect();
+        
+        if (newLeft < 0) newLeft = 0;
+        if (newLeft + rect.width > windowWidth) newLeft = windowWidth - rect.width;
+        if (newTop < 0) newTop = 0;
+        if (newTop + rect.height > windowHeight) newTop = windowHeight - rect.height;
+        
+        chatWindow.style.left = newLeft + 'px';
+        chatWindow.style.top = newTop + 'px';
+    }
+
+    function onMouseUp() {
+        isDragging = false;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    // Touch события для мобильных устройств
+    chatHeader.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.chat-header-actions')) return;
+        
+        isDragging = true;
+        const rect = chatWindow.getBoundingClientRect();
+        
+        chatWindow.style.position = 'fixed';
+        chatWindow.style.bottom = 'auto';
+        chatWindow.style.right = 'auto';
+        chatWindow.style.left = rect.left + 'px';
+        chatWindow.style.top = rect.top + 'px';
+        
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        startLeft = rect.left;
+        startTop = rect.top;
+        
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+    });
+
+    function onTouchMove(e) {
+        if (!isDragging) return;
+        
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+        
+        let newLeft = startLeft + deltaX;
+        let newTop = startTop + deltaY;
+        
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const rect = chatWindow.getBoundingClientRect();
+        
+        if (newLeft < 0) newLeft = 0;
+        if (newLeft + rect.width > windowWidth) newLeft = windowWidth - rect.width;
+        if (newTop < 0) newTop = 0;
+        if (newTop + rect.height > windowHeight) newTop = windowHeight - rect.height;
+        
+        chatWindow.style.left = newLeft + 'px';
+        chatWindow.style.top = newTop + 'px';
+        
+        e.preventDefault();
+    }
+
+    function onTouchEnd() {
+        isDragging = false;
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+    }
 }
 
 // Добавление сообщения в чат
